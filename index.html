@@ -3,151 +3,222 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Monster Walker</title>
+<title>Monster GO — Browser Adventure</title>
 <style>
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Arial,sans-serif;background:#87c96b}
-#game{position:relative;width:100vw;height:100vh;overflow:hidden;background:#8fd16b;touch-action:none}
-#world{position:absolute;left:50%;top:50%;width:2400px;height:1800px;transform:translate(-50%,-50%);background:#9bd875;overflow:hidden}
-.grass{position:absolute;inset:0;background-image:
- radial-gradient(circle at 20% 30%,rgba(50,130,55,.15) 0 3px,transparent 4px),
- radial-gradient(circle at 70% 60%,rgba(50,130,55,.12) 0 3px,transparent 4px);
- background-size:85px 85px,110px 110px}
-.road{position:absolute;background:#d8c79b;border:5px solid #c2ad7d;box-shadow:inset 0 0 0 4px rgba(255,255,255,.18)}
-.road.h{height:130px;width:100%;top:720px}
-.road.v{width:130px;height:100%;left:1135px}
-.park{position:absolute;width:330px;height:240px;border-radius:45px;background:#78bd62;border:6px solid #66a954}
-.tree{position:absolute;width:54px;height:54px;border-radius:50%;background:#318e45;border:7px solid #25753a;box-shadow:0 7px 0 #246b36}
-.pond{position:absolute;width:360px;height:220px;border-radius:50%;background:#55bfe1;border:8px solid #398fb1}
-.building{position:absolute;border-radius:12px;background:#e8a36f;border:7px solid #bd754c;box-shadow:0 7px 0 rgba(0,0,0,.12)}
-#player{position:absolute;width:58px;height:58px;border-radius:50%;background:#4b75e8;border:6px solid white;box-shadow:0 4px 10px #234;z-index:10;display:flex;align-items:center;justify-content:center;font-size:28px}
-#player .face{filter:drop-shadow(0 1px 1px #234)}
-.marker{position:absolute;width:58px;height:58px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#ffcc38;border:5px solid white;box-shadow:0 4px 8px #777;z-index:5;cursor:pointer}
-.marker span{display:block;transform:rotate(45deg);font-size:26px;text-align:center;margin-top:9px}
-#hud{position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;pointer-events:none;z-index:30}
-.card{background:rgba(255,255,255,.92);border-radius:16px;padding:10px 14px;box-shadow:0 3px 12px rgba(0,0,0,.2);font-weight:bold}
-#message{position:absolute;top:75px;left:50%;transform:translateX(-50%);background:rgba(20,30,40,.88);color:#fff;padding:10px 18px;border-radius:20px;z-index:40;opacity:0;transition:.25s;pointer-events:none}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:system-ui,Arial,sans-serif}
+body{background:#86c96c;touch-action:none}
+button{font:inherit;border:0;cursor:pointer}
+#game{position:relative;width:100vw;height:100vh;overflow:hidden;background:#8fd16b}
+#world{position:absolute;left:50%;top:50%;width:3000px;height:2200px;transform:translate(-50%,-50%);overflow:hidden;background:#9bd978}
+#ground{position:absolute;inset:0;background:
+ radial-gradient(circle at 20% 30%,rgba(44,115,52,.16) 0 3px,transparent 4px),
+ radial-gradient(circle at 70% 60%,rgba(44,115,52,.12) 0 3px,transparent 4px);
+background-size:85px 85px,110px 110px}
+.road{position:absolute;background:#d9c89b;border:5px solid #bda875}
+.road.h{left:0;top:930px;width:100%;height:150px}.road.v{left:1425px;top:0;width:150px;height:100%}
+.road2{position:absolute;left:0;top:350px;width:100%;height:95px;background:#dfd0a8;border-top:4px solid #c4b27f;border-bottom:4px solid #c4b27f}
+.park{position:absolute;border-radius:50px;background:#78bd62;border:7px solid #65a954}
+.pond{position:absolute;border-radius:50%;background:#56c4e5;border:9px solid #3d91b3}
+.building{position:absolute;border-radius:15px;background:#e9a572;border:7px solid #b8754e;box-shadow:0 9px 0 rgba(0,0,0,.12)}
+.building:after{content:"▦";position:absolute;inset:25px;color:#8a5439;font-size:55px;text-align:center;opacity:.45}
+.tree{position:absolute;width:58px;height:58px;border-radius:50%;background:#318e45;border:7px solid #25743a;box-shadow:0 7px 0 #245f34}
+#player{position:absolute;width:62px;height:62px;border-radius:50%;background:#4676eb;border:5px solid #fff;box-shadow:0 5px 12px #345;z-index:20;display:flex;align-items:center;justify-content:center;font-size:30px;transition:transform .08s}
+#player.walk{animation:bob .35s infinite alternate}
+@keyframes bob{to{transform:translateY(-4px)}}
+.mon{position:absolute;width:62px;height:62px;border-radius:50%;border:4px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,.3);z-index:15;display:flex;align-items:center;justify-content:center;font-size:34px;animation:float 1.3s infinite ease-in-out alternate;cursor:pointer}
+@keyframes float{to{transform:translateY(-7px)}}
+.mon .name{position:absolute;top:65px;font-size:11px;background:rgba(20,30,35,.78);color:white;padding:3px 7px;border-radius:10px;white-space:nowrap}
+.poi{position:absolute;width:64px;height:64px;border-radius:50%;background:#ffcc38;border:5px solid white;box-shadow:0 4px 8px #777;z-index:8;display:flex;align-items:center;justify-content:center;font-size:29px}
+#hud{position:absolute;top:12px;left:12px;right:12px;z-index:50;display:flex;gap:8px;justify-content:space-between;pointer-events:none}
+.card{background:rgba(255,255,255,.94);border-radius:16px;padding:8px 12px;box-shadow:0 3px 12px rgba(0,0,0,.2);font-weight:800;pointer-events:auto}
+#levelBar{width:140px;height:7px;background:#ddd;border-radius:10px;overflow:hidden;margin-top:5px}.fill{height:100%;width:0;background:#6d55e8}
+#buttons{position:absolute;right:16px;bottom:20px;z-index:55;display:grid;grid-template-columns:repeat(2,62px);gap:9px}
+.iconBtn{width:62px;height:62px;border-radius:19px;background:rgba(255,255,255,.94);box-shadow:0 4px 12px #5558;font-size:27px}
+#joystick{position:absolute;left:22px;bottom:22px;width:150px;height:150px;border-radius:50%;background:#ffffff4d;border:4px solid #ffffffaa;z-index:55}
+#stick{position:absolute;left:50%;top:50%;width:72px;height:72px;transform:translate(-50%,-50%);border-radius:50%;background:#445a78dd;border:5px solid white;box-shadow:0 5px 12px #0005}
+#nearby{position:absolute;top:75px;right:12px;z-index:50;background:#ffffffdf;border-radius:15px;padding:8px 11px;box-shadow:0 3px 10px #0003;max-width:160px;font-size:12px}
+#message{position:absolute;top:78px;left:50%;transform:translateX(-50%);z-index:100;background:#18232deF;color:white;padding:10px 18px;border-radius:20px;opacity:0;transition:.25s;pointer-events:none}
 #message.show{opacity:1}
-#joystick{position:absolute;left:25px;bottom:25px;width:145px;height:145px;border-radius:50%;background:rgba(255,255,255,.3);border:4px solid rgba(255,255,255,.7);z-index:50}
-#stick{position:absolute;left:50%;top:50%;width:70px;height:70px;transform:translate(-50%,-50%);border-radius:50%;background:rgba(55,80,110,.8);border:5px solid rgba(255,255,255,.8);box-shadow:0 4px 10px rgba(0,0,0,.25)}
-#hint{position:absolute;right:18px;bottom:25px;background:rgba(255,255,255,.9);padding:12px 16px;border-radius:15px;z-index:20;max-width:210px}
-@media(max-width:600px){#hint{display:none}.card{font-size:14px}.road.h{height:110px;top:720px}.road.v{width:110px;left:1145px}}
+#weather{position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:51}
+#modal{position:absolute;inset:0;background:#0008;z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.panel{width:min(430px,95vw);max-height:85vh;overflow:auto;background:#fff;border-radius:24px;padding:20px;box-shadow:0 15px 50px #0008}
+.panel h2{margin:0 0 12px}.close{float:right;background:#eee;border-radius:50%;width:35px;height:35px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.entry{padding:12px;background:#f1f3f6;border-radius:16px;text-align:center;font-size:14px}.entry b{display:block;font-size:32px}
+#encounter{position:absolute;inset:0;z-index:180;display:none;background:linear-gradient(#65bde7,#d6f2cf 55%,#7fbd61);align-items:center;justify-content:center;flex-direction:column}
+.encMon{font-size:130px;filter:drop-shadow(0 12px 8px #555);animation:float 1.3s infinite alternate}
+.catchbar{display:flex;gap:12px;margin-top:30px}.action{padding:14px 20px;border-radius:18px;background:#fff;box-shadow:0 4px 10px #0004;font-weight:800}
+#toastStats{font-size:13px;color:#555;margin-bottom:12px}
+#rain{position:absolute;inset:0;z-index:40;pointer-events:none;opacity:0;transition:.5s;background:repeating-linear-gradient(105deg,transparent 0 18px,#ffffff33 19px 21px)}
+#night{position:absolute;inset:0;z-index:39;pointer-events:none;background:#102052;opacity:0;transition:.5s}
+@media(max-width:600px){#nearby{max-width:135px}.card{font-size:12px}.iconBtn{width:56px;height:56px}.buttons{grid-template-columns:repeat(2,56px)}}
 </style>
 </head>
 <body>
 <div id="game">
   <div id="world">
-    <div class="grass"></div>
-    <div class="road h"></div><div class="road v"></div>
-    <div class="park" style="left:220px;top:220px"></div>
-    <div class="pond" style="left:1660px;top:300px"></div>
-    <div class="building" style="left:350px;top:1050px;width:260px;height:190px"></div>
-    <div class="building" style="left:1600px;top:1020px;width:300px;height:220px"></div>
-    <div class="building" style="left:700px;top:350px;width:230px;height:160px"></div>
+    <div id="ground"></div>
+    <div class="road h"></div><div class="road v"></div><div class="road2"></div>
+    <div class="park" style="left:180px;top:120px;width:430px;height:280px"></div>
+    <div class="park" style="left:2050px;top:1250px;width:520px;height:360px"></div>
+    <div class="pond" style="left:1850px;top:220px;width:420px;height:250px"></div>
+    <div class="building" style="left:300px;top:1120px;width:310px;height:220px"></div>
+    <div class="building" style="left:1700px;top:1040px;width:330px;height:230px"></div>
+    <div class="building" style="left:700px;top:500px;width:270px;height:180px"></div>
+    <div class="building" style="left:2200px;top:650px;width:290px;height:200px"></div>
     <div id="trees"></div>
-    <div class="marker" data-name="Wild Spark" style="left:450px;top:550px"><span>⚡</span></div>
-    <div class="marker" data-name="Leafy Buddy" style="left:1740px;top:620px"><span>🌿</span></div>
-    <div class="marker" data-name="Water Friend" style="left:850px;top:1260px"><span>💧</span></div>
-    <div class="marker" data-name="Fire Friend" style="left:2050px;top:1050px"><span>🔥</span></div>
-    <div id="player"><span class="face">🧢</span></div>
+    <div class="poi" style="left:1330px;top:870px">🏠</div>
+    <div class="poi" style="left:1500px;top:870px">💎</div>
+    <div id="monsters"></div>
+    <div id="player">🧢</div>
   </div>
 
+  <div id="night"></div><div id="rain"></div>
   <div id="hud">
-    <div class="card">⭐ XP: <span id="xp">0</span></div>
-    <div class="card">🪙 <span id="coins">0</span></div>
+    <div class="card">⭐ Lv <span id="level">1</span><div id="levelBar"><div class="fill" id="xpFill"></div></div></div>
+    <div class="card">⭐ <span id="xp">0</span> &nbsp; 🪙 <span id="coins">50</span></div>
   </div>
+  <div id="weather" class="card">☀️ Clear</div>
+  <div id="nearby">👣 Nearby:<br><span id="nearbyText">Searching...</span></div>
   <div id="message"></div>
-  <div id="hint">🕹️ Drag the joystick to walk around the world.<br><br>Get close to the markers to collect them!</div>
+
   <div id="joystick"><div id="stick"></div></div>
+  <div id="buttons">
+    <button class="iconBtn" id="bag">🎒</button>
+    <button class="iconBtn" id="dex">📖</button>
+    <button class="iconBtn" id="mapBtn">🗺️</button>
+    <button class="iconBtn" id="settings">⚙️</button>
+  </div>
+
+  <div id="modal"><div class="panel" id="panel"></div></div>
+
+  <div id="encounter">
+    <div id="encTitle" style="font-size:18px;font-weight:800"></div>
+    <div class="encMon" id="encMon">🐾</div>
+    <div id="encInfo"></div>
+    <div class="catchbar">
+      <button class="action" id="berry">🍓 Berry</button>
+      <button class="action" id="ball">🔴 Pokéball</button>
+      <button class="action" id="run">🏃 Run</button>
+    </div>
+  </div>
 </div>
 
 <script>
-const world=document.getElementById("world");
-const player=document.getElementById("player");
-const joystick=document.getElementById("joystick");
-const stick=document.getElementById("stick");
-const xpEl=document.getElementById("xp"), coinsEl=document.getElementById("coins");
-const msg=document.getElementById("message");
-
-let px=1170, py=820, xp=0, coins=0;
-let joy={x:0,y:0,active:false,id:null};
-const speed=3.8;
-const W=2400,H=1800;
-
-function makeTrees(){
-  const positions=[
-    [120,120],[280,90],[520,170],[820,110],[1260,120],[1500,150],[1960,130],[2200,230],
-    [120,500],[240,620],[980,620],[1400,560],[2180,520],[120,980],[280,1360],
-    [650,1480],[1100,1400],[1450,1450],[1980,1380],[2200,1500]
-  ];
-  positions.forEach(([x,y])=>{
-    const t=document.createElement("div"); t.className="tree"; t.style.left=x+"px"; t.style.top=y+"px"; world.appendChild(t);
-  });
+const W=3000,H=2200, world=document.getElementById("world"), player=document.getElementById("player");
+const xpEl=document.getElementById("xp"),coinsEl=document.getElementById("coins"),levelEl=document.getElementById("level");
+const fill=document.getElementById("xpFill"),nearbyText=document.getElementById("nearbyText"),weatherEl=document.getElementById("weather");
+let px=1500,py=1000,xp=0,coins=50,level=1,balls=15,berries=5;
+let caught=[], current=null, joy={x:0,y:0,active:false}, speed=4.2, facing=1;
+const types=[
+ {name:"Flameling",emoji:"🔥",type:"Fire",rarity:"Common"},
+ {name:"Aquabit",emoji:"💧",type:"Water",rarity:"Common"},
+ {name:"Leaflet",emoji:"🌿",type:"Grass",rarity:"Common"},
+ {name:"Sparkit",emoji:"⚡",type:"Electric",rarity:"Uncommon"},
+ {name:"Mooncat",emoji:"🌙",type:"Mystic",rarity:"Rare"},
+ {name:"Stoneko",emoji:"🪨",type:"Rock",rarity:"Uncommon"},
+ {name:"Frosty",emoji:"❄️",type:"Ice",rarity:"Rare"},
+ {name:"Mushloom",emoji:"🍄",type:"Grass",rarity:"Common"}
+];
+const mons=[];
+function treeData(){
+ const a=[]; for(let i=0;i<55;i++){let x=60+(i*397)%2850,y=70+(i*251)%2020;a.push([x,y])} return a;
 }
-makeTrees();
-
-function showMessage(text){
-  msg.textContent=text; msg.classList.add("show");
-  clearTimeout(showMessage.t); showMessage.t=setTimeout(()=>msg.classList.remove("show"),1800);
+treeData().forEach(([x,y])=>{let t=document.createElement("div");t.className="tree";t.style.left=x+"px";t.style.top=y+"px";document.getElementById("trees").appendChild(t)});
+function spawn(n=14){
+ for(let i=0;i<n;i++){
+  const kind=types[Math.floor(Math.random()*types.length)], el=document.createElement("div");
+  const x=100+Math.random()*2800,y=100+Math.random()*2000;
+  el.className="mon";el.style.left=x+"px";el.style.top=y+"px";el.innerHTML=`${kind.emoji}<span class="name">${kind.name}</span>`;
+  el.dataset.x=x;el.dataset.y=y;el.kind=kind;el.onclick=()=>openEncounter(el);
+  document.getElementById("monsters").appendChild(el);mons.push(el);
+ }
 }
-function clamp(v,min,max){return Math.max(min,Math.min(max,v))}
-function update(){
-  px=clamp(px+joy.x*speed,30,W-30);
-  py=clamp(py+joy.y*speed,30,H-30);
-  player.style.left=(px-29)+"px"; player.style.top=(py-29)+"px";
+spawn();
 
-  // Camera follows player
-  const cx=innerWidth/2-px, cy=innerHeight/2-py;
-  world.style.transform=`translate(calc(-50% + ${cx}px),calc(-50% + ${cy}px))`;
-
-  document.querySelectorAll(".marker").forEach(m=>{
-    if(m.dataset.collected) return;
-    const mx=parseFloat(m.style.left)+29, my=parseFloat(m.style.top)+29;
-    const d=Math.hypot(mx-px,my-py);
-    if(d<75){
-      m.dataset.collected="1";
-      m.style.opacity=".35"; m.style.pointerEvents="none";
-      xp+=25; coins+=5; xpEl.textContent=xp; coinsEl.textContent=coins;
-      showMessage("🎉 You found "+m.dataset.name+"! +25 XP");
-    }
-  });
-  requestAnimationFrame(update);
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+function show(text){const m=document.getElementById("message");m.textContent=text;m.classList.add("show");clearTimeout(show.t);show.t=setTimeout(()=>m.classList.remove("show"),1900)}
+function addXP(n){xp+=n;while(xp>=level*100){xp-=level*100;level++;show("🎉 Level up! You reached level "+level)}xpEl.textContent=xp;levelEl.textContent=level;fill.style.width=(xp/(level*100)*100)+"%"}
+function camera(){
+ const cx=innerWidth/2-px,cy=innerHeight/2-py;
+ world.style.transform=`translate(calc(-50% + ${cx}px),calc(-50% + ${cy}px))`;
 }
-function setJoy(clientX,clientY){
-  const r=joystick.getBoundingClientRect();
-  let dx=clientX-(r.left+r.width/2), dy=clientY-(r.top+r.height/2);
-  const max=r.width/2-38;
-  const dist=Math.hypot(dx,dy);
-  if(dist>max){dx=dx/dist*max;dy=dy/dist*max}
-  stick.style.left=`calc(50% + ${dx}px)`;
-  stick.style.top=`calc(50% + ${dy}px)`;
-  joy.x=dx/max; joy.y=dy/max;
+function collision(nx,ny){
+ const obstacles=[...document.querySelectorAll(".building")].map(e=>({x:+e.style.left,y:+e.style.top,w:e.offsetWidth,h:e.offsetHeight}));
+ return obstacles.some(o=>nx+27>o.x&&nx-27<o.x+o.w&&ny+27>o.y&&ny-27<o.y+o.h);
 }
-function resetJoy(){
-  joy.x=0;joy.y=0;joy.active=false;
-  stick.style.left="50%";stick.style.top="50%";
+function updateNearby(){
+ let arr=mons.filter(m=>m.isConnected).map(m=>({m,d:Math.hypot(+m.dataset.x-px,+m.dataset.y-py)})).sort((a,b)=>a.d-b.d).slice(0,3);
+ nearbyText.innerHTML=arr.length?arr.map(a=>a.m.kind.emoji+" "+a.m.kind.name+" "+Math.round(a.d)+"m").join("<br>"):"None nearby";
 }
-joystick.addEventListener("pointerdown",e=>{
-  e.preventDefault(); joy.active=true; joy.id=e.pointerId;
-  joystick.setPointerCapture(e.pointerId); setJoy(e.clientX,e.clientY);
-});
-joystick.addEventListener("pointermove",e=>{if(joy.active&&e.pointerId===joy.id)setJoy(e.clientX,e.clientY)});
-joystick.addEventListener("pointerup",resetJoy);
-joystick.addEventListener("pointercancel",resetJoy);
+function loop(){
+ let moving=Math.abs(joy.x)+Math.abs(joy.y)>0.05;
+ if(moving){
+  let nx=clamp(px+joy.x*speed,30,W-30),ny=clamp(py+joy.y*speed,30,H-30);
+  if(!collision(nx,py))px=nx;if(!collision(px,ny))py=ny;
+  player.classList.add("walk"); if(Math.abs(joy.x)>.2)facing=joy.x>0?1:-1;
+ }else player.classList.remove("walk");
+ player.style.left=(px-31)+"px";player.style.top=(py-31)+"px";player.style.transform=`scaleX(${facing})`;
+ camera();updateNearby();
+ requestAnimationFrame(loop);
+}
+const joystick=document.getElementById("joystick"),stick=document.getElementById("stick");
+function setJoy(x,y){const r=joystick.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,max=37;let dx=x-cx,dy=y-cy,d=Math.hypot(dx,dy);if(d>max){dx=dx/d*max;dy=dy/d*max}stick.style.left=`calc(50% + ${dx}px)`;stick.style.top=`calc(50% + ${dy}px)`;joy.x=dx/max;joy.y=dy/max}
+function reset(){joy.x=0;joy.y=0;joy.active=false;stick.style.left="50%";stick.style.top="50%"}
+joystick.addEventListener("pointerdown",e=>{joy.active=true;joystick.setPointerCapture(e.pointerId);setJoy(e.clientX,e.clientY)});
+joystick.addEventListener("pointermove",e=>{if(joy.active)setJoy(e.clientX,e.clientY)});
+joystick.addEventListener("pointerup",reset);joystick.addEventListener("pointercancel",reset);
+window.addEventListener("keydown",e=>{if(e.key==="w"||e.key==="ArrowUp")joy.y=-1;if(e.key==="s"||e.key==="ArrowDown")joy.y=1;if(e.key==="a"||e.key==="ArrowLeft")joy.x=-1;if(e.key==="d"||e.key==="ArrowRight")joy.x=1});
+window.addEventListener("keyup",e=>{if(["w","a","s","d","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key))reset()});
 
-window.addEventListener("keydown",e=>{
-  if(e.key==="ArrowUp"||e.key.toLowerCase()==="w")joy.y=-1;
-  if(e.key==="ArrowDown"||e.key.toLowerCase()==="s")joy.y=1;
-  if(e.key==="ArrowLeft"||e.key.toLowerCase()==="a")joy.x=-1;
-  if(e.key==="ArrowRight"||e.key.toLowerCase()==="d")joy.x=1;
-});
-window.addEventListener("keyup",e=>{
-  if(["ArrowUp","ArrowDown","w","a","s","d"].includes(e.key))resetJoy();
-});
+function openEncounter(el){
+ const d=Math.hypot(+el.dataset.x-px,+el.dataset.y-py);
+ if(d>130){show("Walk closer to "+el.kind.name+"!");return}
+ current=el;document.getElementById("encounter").style.display="flex";
+ document.getElementById("encTitle").textContent=el.kind.name+" appeared!";
+ document.getElementById("encMon").textContent=el.kind.emoji;
+ document.getElementById("encInfo").textContent=`${el.kind.type} • ${el.kind.rarity}`;
+}
+function closeEncounter(){document.getElementById("encounter").style.display="none";current=null}
+document.getElementById("run").onclick=()=>{show("You let it run away.");closeEncounter()}
+document.getElementById("berry").onclick=()=>{if(berries>0){berries--;show("🍓 The berry made it easier to catch!");document.getElementById("encInfo").textContent="✨ Catch chance increased!"}else show("No berries left!")};
+document.getElementById("ball").onclick=()=>{
+ if(!current)return;if(balls<=0){show("You're out of Pokéballs!");return}
+ balls--;let bonus=berries<5?0.08:0.15;let chance=(current.kind.rarity==="Rare"?0.34:0.62)+bonus;
+ if(Math.random()<chance){
+  caught.push(current.kind);addXP(current.kind.rarity==="Rare"?100:60);coins+=10;coinsEl.textContent=coins;
+  current.remove();show("🎉 "+current.kind.name+" caught! +XP");closeEncounter();
+ }else{show("💨 It broke free!");document.getElementById("encInfo").textContent="It broke free! Try again."}
+};
 
-window.addEventListener("resize",()=>{});
-showMessage("🗺️ Explore the world!");
-update();
+function openModal(title,body){
+ const modal=document.getElementById("modal"),panel=document.getElementById("panel");
+ panel.innerHTML=`<button class="close" onclick="closeModal()">✕</button><h2>${title}</h2>${body}`;
+ modal.style.display="flex";
+}
+function closeModal(){document.getElementById("modal").style.display="none"}
+document.getElementById("bag").onclick=()=>openModal("🎒 Inventory",`<div class="grid">
+<div class="entry"><b>🔴</b>Pokéballs<br><strong>${balls}</strong></div>
+<div class="entry"><b>🍓</b>Berries<br><strong>${berries}</strong></div>
+<div class="entry"><b>🪙</b>Coins<br><strong>${coins}</strong></div>
+</div><br><div id="toastStats">Items can be used during encounters.</div>`);
+document.getElementById("dex").onclick=()=>{
+ let counts={};caught.forEach(c=>counts[c.name]=(counts[c.name]||0)+1);
+ openModal("📖 Pokédex",`<div id="toastStats">${Object.keys(counts).length}/${types.length} species discovered</div><div class="grid">${types.map(t=>`<div class="entry"><b>${counts[t.name]?t.emoji:"❔"}</b>${counts[t.name]?t.name:"Unknown"}<br>${counts[t.name]||0} caught</div>`).join("")}</div>`);
+};
+document.getElementById("mapBtn").onclick=()=>{show("🗺️ You're exploring the browser world!");}
+document.getElementById("settings").onclick=()=>openModal("⚙️ Settings",`
+<div class="entry" style="margin-bottom:10px">🎵 Sound effects<br><button class="action" onclick="show('🔊 Sound setting ready')">Toggle</button></div>
+<div class="entry" style="margin-bottom:10px">🌦️ Weather changes automatically</div>
+<div class="entry">💾 Progress stays while this page is open.</div>`);
+
+let weatherIndex=0;
+const weather=[["☀️ Clear","clear"],["🌧️ Rain","rain"],["☁️ Cloudy","cloud"],["🌤️ Partly cloudy","clear"]];
+function changeWeather(){weatherIndex=(weatherIndex+1)%weather.length;weatherEl.textContent=weather[weatherIndex][0];document.getElementById("rain").style.opacity=weather[weatherIndex][1]==="rain"?.55:0;show("Weather changed!")}
+setInterval(changeWeather,30000);
+let night=false;
+setInterval(()=>{night=!night;document.getElementById("night").style.opacity=night?.22:0;},45000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)camera()});
+camera();loop();show("🗺️ Explore, find creatures and catch them!");
 </script>
 </body>
 </html>
