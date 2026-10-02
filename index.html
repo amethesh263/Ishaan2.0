@@ -87,6 +87,10 @@ linear-gradient(#68c4ea 0%,#d8f3d1 55%,#80bf65 56%,#6dac58 100%)}
 .minimap .mroad{position:absolute;background:#d7c693}.minimap .mp{position:absolute;width:8px;height:8px;background:#4778ee;border:2px solid white;border-radius:50%}.minimap .mm{position:absolute;width:6px;height:6px;background:#ef4f50;border-radius:50%}
 #mission{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);z-index:110;background:#ffffffdc;padding:8px 13px;border-radius:15px;box-shadow:var(--shadow);font-size:12px;font-weight:800}
 @media(max-width:600px){#nearby{max-width:145px}.minimap{display:none}.stats{min-width:140px}.icon{width:57px;height:57px}.buttons{grid-template-columns:repeat(2,57px)}}
+
+#playerHUD{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:82px;height:92px;z-index:10000;display:flex;align-items:center;justify-content:center;font-size:45px;background:#315ee9;border:5px solid #fff;border-radius:50%;box-shadow:0 0 0 6px #315ee988,0 10px 22px #0009;opacity:1;visibility:visible;pointer-events:none}
+#playerHUD:before{content:"";position:absolute;bottom:4px;width:50px;height:13px;border-radius:50%;background:#0006;filter:blur(2px);z-index:-1}
+#playerHUD:after{content:"YOU";position:absolute;top:-25px;left:50%;transform:translateX(-50%);font:900 11px Arial,sans-serif;letter-spacing:.5px;background:#315ee9;color:#fff;border:2px solid #fff;border-radius:12px;padding:3px 8px;box-shadow:0 3px 7px #0005;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -102,6 +106,7 @@ linear-gradient(#68c4ea 0%,#d8f3d1 55%,#80bf65 56%,#6dac58 100%)}
 <div class="poi" style="position:absolute;left:1600px;top:1020px">🏛️</div>
 <div id="player">🧑</div>
 </div>
+<div id="playerHUD">🧑</div>
 <div id="night"></div><div id="rain"></div>
 <div id="top">
 <div class="glass stats"><div class="level">Trainer Lv <span id="level">1</span></div><div class="xpbar"><div class="xpfill" id="xpfill"></div></div><div class="small"><span id="xp">0</span>/<span id="need">100</span> XP</div></div>
@@ -220,7 +225,7 @@ function camera(){world.style.transform=`translate(calc(-50% + ${innerWidth/2-px
 function nearby(){let a=mons.filter(m=>m.isConnected).map(m=>({m,d:Math.hypot(+m.dataset.x-px,+m.dataset.y-py)})).sort((a,b)=>a.d-b.d).slice(0,3);document.getElementById('nearText').innerHTML=a.map(v=>`${v.m.kind.emoji} ${v.m.kind.name} ${Math.round(v.d)}m`).join('<br>')||'None';let mini=document.getElementById('miniMons');mini.innerHTML=a.map(v=>{let x=clamp(v.m.dataset.x/W*145,2,140),y=clamp(v.m.dataset.y/H*105,2,100);return `<i class="mm" style="left:${x}px;top:${y}px"></i>`}).join('');let mp=document.getElementById('miniPlayer');mp.style.left=clamp(px/W*145,2,140)+'px';mp.style.top=clamp(py/H*105,2,100)+'px'}
 function tick(now){let dt=Math.min(40,now-last);last=now;time+=dt;let moving=Math.hypot(joy.x,joy.y)>.05;if(moving){let nx=clamp(px+joy.x*speed,40,W-40),ny=clamp(py+joy.y*speed,40,H-40);if(!collision(nx,py))px=nx;if(!collision(px,ny))py=ny;player.classList.add('walk');if(Math.abs(joy.x)>.2)facing=joy.x>0?1:-1}else player.classList.remove('walk');player.style.left=(px-41)+'px';
 player.style.top=(py-49)+'px';
-player.style.transform=`scaleX(${facing})`;
+player.style.transform=`scaleX(${facing})`;document.getElementById('playerHUD').style.transform=`translate(-50%,-50%) scaleX(${facing})`;
 moveMons();camera();nearby();requestAnimationFrame(tick)}
 const joystick=document.getElementById('joystick'),stick=document.getElementById('stick');
 function setJoy(x,y){let r=joystick.getBoundingClientRect(),dx=x-(r.left+r.width/2),dy=y-(r.top+r.height/2),max=39,d=Math.hypot(dx,dy);if(d>max){dx=dx/d*max;dy=dy/d*max}stick.style.left=`calc(50% + ${dx}px)`;stick.style.top=`calc(50% + ${dy}px)`;joy.x=dx/max;joy.y=dy/max}
