@@ -88,7 +88,7 @@ function weightedRarity(pack){
   starter:[['Common',72],['Uncommon',20],['Rare',6.5],['Ultra Rare',1],['Mythical',0.25],['Secret Rare',0.08],['EX',0.07],['GX',0.05],['Ishaan',0.05]],
   ocean:[['Common',50],['Uncommon',28],['Rare',15],['Ultra Rare',5],['Mythical',1.2],['Secret Rare',0.25],['EX',0.2],['GX',0.2],['Ishaan',0.15]],
   legendary:[['Common',25],['Uncommon',27],['Rare',25],['Ultra Rare',15],['Mythical',5],['Secret Rare',1],['EX',0.7],['GX',0.7],['Ishaan',0.6]],
-  mythical:[['Common',10],['Uncommon',17],['Rare',25],['Ultra Rare',25],['Mythical',17],['Secret Rare',2.5],['EX',1.2],['GX',1.1],['Ishaan',1.2]]
+  mythical:[['Common',0.10],['Uncommon',1],['Rare',5],['Ultra Rare',25],['Mythical',50],['Secret Rare',40],['EX',30],['GX',20],['Ishaan',10]]
  };
  const table=tables[pack.id]||tables.free;let roll=Math.random()*100,sum=0;
  for(const [rarity,chance] of table){sum+=chance;if(roll<sum)return rarity}return 'Common';
