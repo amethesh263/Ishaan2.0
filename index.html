@@ -84,7 +84,7 @@ function renderPacks(){$('packGrid').innerHTML=packs.map(p=>`<article class="pac
 function weightedRarity(pack){
  // Explicit probabilities prevent premium variants being accidentally common.
  const tables={
-  free:[['Common',69],['Uncommon',22],['Rare',7],['Ultra Rare',1.35],['Mythical',0.35],['Secret Rare',0.12],['EX',0.07],['GX',0.05],['Ishaan',0.06]],
+  free:[['Common',35],['Uncommon',22],['Rare',18],['Ultra Rare',15],['Mythical',10],['Secret Rare',5],['EX',3],['GX',3],['Ishaan',1]],
   starter:[['Common',72],['Uncommon',20],['Rare',6.5],['Ultra Rare',1],['Mythical',0.25],['Secret Rare',0.08],['EX',0.07],['GX',0.05],['Ishaan',0.05]],
   ocean:[['Common',50],['Uncommon',28],['Rare',15],['Ultra Rare',5],['Mythical',1.2],['Secret Rare',0.25],['EX',0.2],['GX',0.2],['Ishaan',0.15]],
   legendary:[['Common',25],['Uncommon',27],['Rare',25],['Ultra Rare',15],['Mythical',5],['Secret Rare',1],['EX',0.7],['GX',0.7],['Ishaan',0.6]],
